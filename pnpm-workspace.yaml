@@ -5,7 +5,7 @@ packages:
 catalog:
   eslint: 10.10.0
   prettier: 3.9.8
-  typescript: 5.9.2
+  typescript: 6.0.2
 
 minimumReleaseAgeExclude:
   - '@eslint-react/ast@5.20.0'
