@@ -6,7 +6,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier . --write",
-    "format:check": "prettier . --check"
+    "format:check": "prettier . --check",
+    "prepare": "simple-git-hooks"
   },
   "author": "Ezhana",
   "license": "MIT",
@@ -14,11 +15,16 @@
   "engines": {
     "node": ">=24 <25"
   },
+  "simple-git-hooks": {
+    "pre-commit": "pnpm exec lint-staged"
+  },
   "devDependencies": {
     "@ezhana/eslint-config-base": "workspace:*",
     "@ezhana/prettier-config": "workspace:*",
     "eslint": "catalog:",
+    "lint-staged": "17.5.1",
     "prettier": "catalog:",
+    "simple-git-hooks": "2.14.0",
     "typescript": "catalog:"
   }
 }
