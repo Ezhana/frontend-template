@@ -4,23 +4,23 @@ A pnpm-based frontend monorepo providing reusable ESLint and Prettier configurat
 
 ## Features
 
-* pnpm workspace monorepo
-* Centralized dependency versions with pnpm Catalog
-* ESLint 10 Flat Config
-* TypeScript ESLint configuration
-* Vue 3 ESLint configuration
-* React ESLint configuration
-* Shared Prettier configuration
-* Vue + Vite + TypeScript template
-* React + Vite + TypeScript template
-* lint-staged with simple-git-hooks
-* GitHub Actions CI
-* Changesets for package versioning and releases
+- pnpm workspace monorepo
+- Centralized dependency versions with pnpm Catalog
+- ESLint 10 Flat Config
+- TypeScript ESLint configuration
+- Vue 3 ESLint configuration
+- React ESLint configuration
+- Shared Prettier configuration
+- Vue + Vite + TypeScript template
+- React + Vite + TypeScript template
+- lint-staged with simple-git-hooks
+- GitHub Actions CI
+- Changesets for package versioning and releases
 
 ## Requirements
 
-* Node.js 24 LTS
-* pnpm 12
+- Node.js 24 LTS
+- pnpm 12
 
 The repository pins the package manager in the root `package.json` and defines the supported Node.js version through `engines`.
 
@@ -64,10 +64,10 @@ Base ESLint Flat Config for frontend JavaScript projects.
 
 Includes:
 
-* ESLint recommended rules
-* Browser globals
-* Basic JavaScript rules
-* Prettier compatibility
+- ESLint recommended rules
+- Browser globals
+- Basic JavaScript rules
+- Prettier compatibility
 
 Usage:
 
@@ -135,11 +135,11 @@ apps/vue-vite
 
 Stack:
 
-* Vue 3
-* Vite
-* TypeScript
-* ESLint
-* Prettier
+- Vue 3
+- Vite
+- TypeScript
+- ESLint
+- Prettier
 
 Run locally:
 
@@ -161,11 +161,11 @@ apps/react-vite
 
 Stack:
 
-* React
-* Vite
-* TypeScript
-* ESLint
-* Prettier
+- React
+- Vite
+- TypeScript
+- ESLint
+- Prettier
 
 Run locally:
 
@@ -268,8 +268,8 @@ Prettier is managed independently through:
 
 The repository uses:
 
-* `simple-git-hooks`
-* `lint-staged`
+- `simple-git-hooks`
+- `lint-staged`
 
 Before a commit, only staged files are processed.
 
