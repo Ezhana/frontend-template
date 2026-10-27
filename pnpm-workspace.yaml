@@ -1,0 +1,14 @@
+packages:
+  - 'apps/*'
+  - 'packages/*'
+
+allowBuilds:
+  simple-git-hooks: true
+
+catalog:
+  eslint: 10.10.0
+  prettier: 3.9.8
+  typescript: 6.0.2
+
+minimumReleaseAgeExclude:
+  - create-ezhana-app@0.1.0

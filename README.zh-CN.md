@@ -1,0 +1,78 @@
+# 前端 Monorepo 模板
+
+[English](./README.md) | 简体中文
+
+由 `frontend-template-source` 生成的 pnpm workspace 启动模板。仓库默认**不包含应用**；通过
+**Use this template** 或直接 clone 后，用一行命令选择 React 或 Vue：
+
+```bash
+pnpm create:app
+```
+
+命令会询问框架和应用名，调用官方 `create-vite` / `create-vue` 生成项目，套用 `@ezhana/*` 的
+ESLint、Prettier 和主题集成，最后把应用安装到 `apps/<name>`。生成器本身是已发布的
+`create-ezhana-app` 包，以普通 devDependency 精确锁定，随 workspace 一起版本化和审计。非交互用法：
+
+```bash
+pnpm create:app react my-app
+pnpm create:app vue my-app
+```
+
+生成的应用共用根目录的工具链、Lint、提交钩子和 CI 配置。
+
+## 环境要求
+
+- Node.js 24
+- pnpm 12
+- 首次使用前执行一次 `pnpm install`，它会安装根目录工具和固定版本的生成器
+- 首次执行 `pnpm create:app` 需要网络（会下载官方脚手架和 npm 包）
+
+## 使用方式
+
+```bash
+pnpm install          # 安装根目录工具和固定版本的 create-ezhana-app 生成器
+pnpm create:app       # 选择 React 或 Vue，并输入应用名
+pnpm dev              # 运行已生成的应用
+pnpm build            # 构建已生成的应用
+pnpm lint
+pnpm check            # format:check + lint + build
+```
+
+也可以直接使用 workspace filter：
+
+```bash
+pnpm --filter ./apps/my-app dev
+pnpm --filter ./apps/my-app build
+```
+
+## 共享包（可选）
+
+`packages/` 是可选的自定义共享包目录，里面只有占位 `README.md`。**如果不需要共享包，可以删除
+`packages/` 目录，并从根 `package.json` 中移除 `build:packages` 脚本。** 具体约定见
+[`packages/README.md`](packages/README.md)。
+
+`@ezhana/*` 是普通 npm 依赖，不链接模板源码。
+
+## 主题
+
+生成的应用从 npm 安装已发布的设计令牌与主题运行时；生成的 CSS 自定义属性在入口文件中引入，
+本地不需要构建令牌。
+
+- 颜色模式默认跟随操作系统（`prefers-color-scheme`）。
+- `data-theme` 选择主题；只有显式选择颜色模式时才写 `data-color-mode`。
+- React 和 Vue 应用都会生成主题切换器。
+
+令牌契约和运行时 API 见 npm 包文档：
+
+- [`@ezhana/design-tokens`](https://www.npmjs.com/package/@ezhana/design-tokens)
+- [`@ezhana/theme`](https://www.npmjs.com/package/@ezhana/theme)
+
+## CI
+
+`.github/workflows/ci.yml` 会在每次 push 和 pull request 时执行
+`pnpm install --frozen-lockfile`、`pnpm format:check`、`pnpm lint` 和 `pnpm build`。尚无应用时，
+应用相关步骤为空操作。
+
+## License
+
+MIT
