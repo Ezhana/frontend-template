@@ -1,0 +1,140 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup pnpm and Node.js
+        uses: pnpm/setup@v2
+        with:
+          runtime: node@24.21.0
+          cache: true
+          require-lockfile: true
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Check formatting
+        run: pnpm format:check
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Build
+        run: pnpm build
+
+  # Exercises the published create-ezhana-app package pinned in devDependencies: official
+  # scaffolders in --defaults mode, the framework-mapped config writer and the minimal theme CSS
+  # injection.
+  #
+  # One app is generated per job on purpose. The generator adds apps/<name> to the workspace; a
+  # second `pnpm create:app` in the same job would make pnpm verify the (now stale) lockfile before
+  # running and fail on the new importer. A matrix also keeps the failure attributable to a template.
+  create-app:
+    name: ${{ matrix.mode }} ${{ matrix.framework }} app
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - framework: next
+            lint_package: next
+            mode: default
+          - framework: vue
+            lint_package: vue
+            mode: default
+          - framework: astro
+            lint_package: astro
+            mode: default
+          - framework: nuxt
+            lint_package: nuxt
+            mode: default
+          - framework: sveltekit
+            lint_package: svelte
+            mode: default
+          - framework: next
+            lint_package: next
+            mode: configured
+          - framework: vue
+            lint_package: vue
+            mode: configured
+          - framework: astro
+            lint_package: astro
+            mode: configured
+          - framework: sveltekit
+            lint_package: svelte
+            mode: configured
+          - framework: next
+            lint_package: next
+            mode: theme
+          - framework: vue
+            lint_package: vue
+            mode: theme
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup pnpm and Node.js
+        uses: pnpm/setup@v2
+        with:
+          runtime: node@24.21.0
+          cache: true
+          require-lockfile: true
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Create ${{ matrix.framework }} app
+        run: |
+          if [ "${{ matrix.mode }}" = "configured" ]; then
+            # Installs the published @ezhana config packages and verifies with ESLint + build.
+            pnpm create:app ${{ matrix.framework }} generated-app --defaults --eslint --prettier
+          elif [ "${{ matrix.mode }}" = "theme" ]; then
+            pnpm create:app ${{ matrix.framework }} generated-app --defaults --no-install --theme ocean
+          else
+            pnpm create:app ${{ matrix.framework }} generated-app --defaults --no-install
+          fi
+
+      - name: Check default generated files
+        if: matrix.mode == 'default'
+        run: |
+          test -f apps/generated-app/package.json
+          test -f apps/generated-app/README.md
+
+      - name: Check configured generated files
+        if: matrix.mode == 'configured'
+        run: |
+          test -f apps/generated-app/eslint.config.mjs
+          test -f apps/generated-app/prettier.config.mjs
+          test -f apps/generated-app/.prettierignore
+          grep -q "@ezhana/eslint-config-${{ matrix.lint_package }}" apps/generated-app/eslint.config.mjs
+          grep -q '@ezhana/prettier-config' apps/generated-app/prettier.config.mjs
+          grep -q '"@ezhana/eslint-config-${{ matrix.lint_package }}": "\^' apps/generated-app/package.json
+          grep -q '"@ezhana/prettier-config": "\^' apps/generated-app/package.json
+          ! grep -q '"workspace:' apps/generated-app/package.json
+
+      - name: Check theme injection
+        if: matrix.mode == 'theme'
+        run: |
+          grep -R -q "@ezhana/design-theme-ocean" apps/generated-app --include='*.css'
